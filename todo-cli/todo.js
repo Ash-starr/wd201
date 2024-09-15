@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+
 const todoList = () => {
   all = [];
   const add = (todoItem) => {
@@ -10,7 +12,9 @@ const todoList = () => {
   const overdue = () => {
     // Write the date check condition here and return the array
     // of overdue items accordingly.
-    return all.filter((todo) => todo.dueDate < today && !todo.completed);
+    return all.filter(
+      (todo) => new Date(todo.dueDate) < new Date(today) && !todo.completed,
+    );
   };
 
   const dueToday = () => {
@@ -63,10 +67,10 @@ const formattedDate = (d) => {
 var dateToday = new Date();
 const today = formattedDate(dateToday);
 const yesterday = formattedDate(
-  new Date(new Date().setDate(dateToday.getDate() - 1))
+  new Date(new Date().setDate(dateToday.getDate() - 1)),
 );
 const tomorrow = formattedDate(
-  new Date(new Date().setDate(dateToday.getDate() + 1))
+  new Date(new Date().setDate(dateToday.getDate() + 1)),
 );
 
 todos.add({ title: "Submit assignment", dueDate: yesterday, completed: false });
@@ -94,3 +98,6 @@ let itemsDueLater = todos.dueLater();
 let formattedItemsDueLater = todos.toDisplayableList(itemsDueLater);
 console.log(formattedItemsDueLater);
 console.log("\n\n");
+
+/* eslint-enable no-undef */
+module.exports = todoList;
