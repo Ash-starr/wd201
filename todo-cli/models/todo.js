@@ -111,20 +111,27 @@ module.exports = (sequelize, DataTypes) => {
           ? formattedDate(this.dueDate)
           : this.dueDate;
 
-      // Display based on completion status and due date
+      // Get today's date for comparison
+      const today = formattedDate(new Date());
+
+      // Handle different cases based on completion status and due date
       if (this.completed) {
-        // For completed tasks, do not showing the due date
-        return `${this.id}. ${checkbox} ${this.title.trim()}`;
-      } else {
-        const today = formattedDate(new Date());
         if (this.dueDate < today) {
-          // Overdue tasks
+          // For completed past-due tasks
+          return `${this.id}. ${checkbox} ${this.title.trim()} ${dueDateFormatted}`;
+        } else {
+          // For completed tasks that are not past due (no date shown)
+          return `${this.id}. ${checkbox} ${this.title.trim()}`;
+        }
+      } else {
+        if (this.dueDate < today) {
+          // For incomplete past-due tasks (not specified in requirements but can be handled)
           return `${this.id}. ${checkbox} ${this.title.trim()} ${dueDateFormatted}`;
         } else if (this.dueDate === today) {
-          // Due today tasks (do not show date)
+          // For incomplete tasks due today (no date shown)
           return `${this.id}. ${checkbox} ${this.title.trim()}`;
         } else {
-          // Due later tasks
+          // For incomplete future tasks
           return `${this.id}. ${checkbox} ${this.title.trim()} ${dueDateFormatted}`;
         }
       }
