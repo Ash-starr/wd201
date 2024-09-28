@@ -53,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
           dueDate: {
             [Op.lt]: today, // less than today
           },
-          completed: false, // only incomplete tasks
+          // completed: false, // only incomplete tasks
         },
         order: [["dueDate", "ASC"]],
       });
@@ -78,7 +78,7 @@ module.exports = (sequelize, DataTypes) => {
           dueDate: {
             [Op.gt]: today, // greater than today
           },
-          completed: false, // only incomplete tasks
+          // completed: false, // only incomplete tasks
         },
         order: [["dueDate", "ASC"]],
       });
@@ -86,19 +86,51 @@ module.exports = (sequelize, DataTypes) => {
 
     static async markAsComplete(id) {
       // FILL IN HERE TO MARK AN ITEM AS COMPLETE
-      return await Todo.update(
-        { completed: true },
-        {
-          where: { id },
-        },
-      );
+      // return await Todo.update(
+      //   { completed: true },
+      //   {
+      //     where: { id },
+      //   }
+      // );
+      const todo = await Todo.findByPk(id);
+
+      if (todo) {
+        todo.completed = true;
+        await todo.save();
+      }
     }
 
+    // displayableString() {
+    //   let checkbox = this.completed ? "[x]" : "[ ]";
+    //   return `${this.id}. ${checkbox} ${this.title} ${this.dueDate}`;
+    // }
     displayableString() {
-      let checkbox = this.completed ? "[x]" : "[ ]";
-      return `${this.id}. ${checkbox} ${this.title} ${this.dueDate}`;
+      const checkbox = this.completed ? "[x]" : "[ ]";
+      const dueDateFormatted =
+        this.dueDate instanceof Date
+          ? formattedDate(this.dueDate)
+          : this.dueDate;
+
+      // Display based on completion status and due date
+      if (this.completed) {
+        // For completed tasks, do not showing the due date
+        return `${this.id}. ${checkbox} ${this.title.trim()}`;
+      } else {
+        const today = formattedDate(new Date());
+        if (this.dueDate < today) {
+          // Overdue tasks
+          return `${this.id}. ${checkbox} ${this.title.trim()} ${dueDateFormatted}`;
+        } else if (this.dueDate === today) {
+          // Due today tasks (do not show date)
+          return `${this.id}. ${checkbox} ${this.title.trim()}`;
+        } else {
+          // Due later tasks
+          return `${this.id}. ${checkbox} ${this.title.trim()} ${dueDateFormatted}`;
+        }
+      }
     }
   }
+
   Todo.init(
     {
       title: DataTypes.STRING,
