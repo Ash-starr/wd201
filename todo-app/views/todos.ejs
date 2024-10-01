@@ -1,9 +1,56 @@
-<table>
-   <% for(var i=0;i<allTodos.length;i++) { %>
-      <tr>
-         <td>
-            <%= allTodos[i].title %>
-         </td>
-      </tr>
-      <% } %>
-</table>
+<div>
+   <h5>Overdue <span id="count-overdue" class="bg-gray-300 py-1 px-2 rounded-xl">
+         <%= allTodos.filter(todo=> new Date(todo.dueDate) < new Date() && !todo.completed).length %>
+      </span></h5>
+   <ul class="list-none p-2">
+      <% allTodos.forEach(todo=> { %>
+         <% if (new Date(todo.dueDate) < new Date() && !todo.completed) { %>
+            <li class="Todo-item">
+               <div class="flex w-fit my-2 px-2 py-1 items-center rounded hover:bg-purple-50">
+                  <input id="todo-checkbox-<%= todo.id %>" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-600" />
+                  <label for="todo-checkbox-<%= todo.id %>" class="ml-2 text-sm text-gray-600 cursor-pointer">
+                     <%= todo.title %>
+                  </label>
+               </div>
+            </li>
+            <% } %>
+               <% }) %>
+   </ul>
+
+   <h5>Due Today <span id="count-due-today" class="bg-gray-300 py-1 px-2 rounded-xl">
+         <%= allTodos.filter(todo=> new Date(todo.dueDate).toDateString() === new Date().toDateString() &&
+            !todo.completed).length %>
+      </span></h5>
+   <ul class="list-none p-2">
+      <% allTodos.forEach(todo=> { %>
+         <% if (new Date(todo.dueDate).toDateString()===new Date().toDateString() && !todo.completed) { %>
+            <li class="Todo-item">
+               <div class="flex w-fit my-2 px-2 py-1 items-center rounded hover:bg-purple-50">
+                  <input id="todo-checkbox-<%= todo.id %>" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-600" />
+                  <label for="todo-checkbox-<%= todo.id %>" class="ml-2 text-sm text-gray-600 cursor-pointer">
+                     <%= todo.title %>
+                  </label>
+               </div>
+            </li>
+            <% } %>
+               <% }) %>
+   </ul>
+
+   <h5>Due Later <span id="count-due-later" class="bg-gray-300 py-1 px-2 rounded-xl">
+         <%= allTodos.filter(todo=> new Date(todo.dueDate) > new Date() && !todo.completed).length %>
+      </span></h5>
+   <ul class="list-none p-2">
+      <% allTodos.forEach(todo=> { %>
+         <% if (new Date(todo.dueDate)> new Date() && !todo.completed) { %>
+            <li class="Todo-item">
+               <div class="flex w-fit my-2 px-2 py-1 items-center rounded hover:bg-purple-50">
+                  <input id="todo-checkbox-<%= todo.id %>" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-600" />
+                  <label for="todo-checkbox-<%= todo.id %>" class="ml-2 text-sm text-gray-600 cursor-pointer">
+                     <%= todo.title %>
+                  </label>
+               </div>
+            </li>
+            <% } %>
+               <% }) %>
+   </ul>
+</div>
