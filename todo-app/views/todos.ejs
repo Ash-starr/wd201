@@ -1,7 +1,11 @@
 <div>
-   <h5>Overdue <span id="count-overdue" class="bg-gray-300 py-1 px-2 rounded-xl">
+
+   <div class="flex justify-start items-center gap-2">
+      <h5>Overdue</h5>
+      <span id="count-overdue" class="bg-gray-300 py-1 px-2 rounded-xl">
          <%= allTodos.filter(todo=> new Date(todo.dueDate) < new Date() && !todo.completed).length %>
-      </span></h5>
+      </span>
+   </div>
    <ul class="list-none p-2">
       <% allTodos.forEach(todo=> { %>
          <% if (new Date(todo.dueDate) < new Date() && !todo.completed) { %>
@@ -17,10 +21,14 @@
                <% }) %>
    </ul>
 
-   <h5>Due Today <span id="count-due-today" class="bg-gray-300 py-1 px-2 rounded-xl">
+
+   <div class="flex justify-start items-center gap-2">
+      <h5>Due Today</h5>
+      <span id="count-due-today" class="bg-gray-300 py-1 px-2 rounded-xl">
          <%= allTodos.filter(todo=> new Date(todo.dueDate).toDateString() === new Date().toDateString() &&
             !todo.completed).length %>
-      </span></h5>
+      </span>
+   </div>
    <ul class="list-none p-2">
       <% allTodos.forEach(todo=> { %>
          <% if (new Date(todo.dueDate).toDateString()===new Date().toDateString() && !todo.completed) { %>
@@ -36,9 +44,13 @@
                <% }) %>
    </ul>
 
-   <h5>Due Later <span id="count-due-later" class="bg-gray-300 py-1 px-2 rounded-xl">
+
+   <div class="flex justify-start items-center gap-2">
+      <h5>Due Later</h5>
+      <span id="count-due-later" class="bg-gray-300 py-1 px-2 rounded-xl">
          <%= allTodos.filter(todo=> new Date(todo.dueDate) > new Date() && !todo.completed).length %>
-      </span></h5>
+      </span>
+   </div>
    <ul class="list-none p-2">
       <% allTodos.forEach(todo=> { %>
          <% if (new Date(todo.dueDate)> new Date() && !todo.completed) { %>
@@ -53,4 +65,6 @@
             <% } %>
                <% }) %>
    </ul>
+
+
 </div>
