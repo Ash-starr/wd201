@@ -19,10 +19,29 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", async (request, response) => {
   const allTodos = await Todo.getTodos();
+  const overdue = allTodos.filter(
+    (todo) => new Date(todo.dueDate) < new Date() && !todo.completed
+  );
+  const dueToday = allTodos.filter(
+    (todo) =>
+      new Date(todo.dueDate).toDateString() === new Date().toDateString() &&
+      !todo.completed
+  );
+  const dueLater = allTodos.filter(
+    (todo) => new Date(todo.dueDate) > new Date() && !todo.completed
+  );
+  const completed = allTodos.filter((todo) => todo.completed);
+
   if (request.accepts("html")) {
-    response.render("index", { allTodos, csrfToken: request.csrfToken() });
+    response.render("index", {
+      overdue,
+      dueToday,
+      dueLater,
+      completed,
+      csrfToken: request.csrfToken(),
+    });
   } else {
-    response.json({ allTodos });
+    response.json({ overdue, dueToday, dueLater, completed });
   }
 });
 

@@ -1,141 +1,121 @@
 <div>
-
+   <!-- Overdue Tasks -->
    <div class="flex justify-start items-center gap-2">
       <h5>Overdue</h5>
       <span id="count-overdue" class="bg-gray-300 py-1 px-2 rounded-xl">
-         <%= allTodos.filter(todo=> new Date(todo.dueDate) < new Date() && !todo.completed).length %>
+         <%= overdue.length %>
       </span>
    </div>
    <ul class="list-none p-2">
-      <% allTodos.forEach(todo=> { %>
-         <% if (new Date(todo.dueDate) < new Date() && !todo.completed) { %>
-            <li class="Todo-Item">
-               <div class="flex w-fit my-2 px-2 py-1 items-center rounded hover:bg-purple-50">
-                  <input id="todo-checkbox-<%= todo.id %>" type="checkbox" <%=todo.completed ? "checked" : "" %>
-                  onclick="updateTodo(<%= todo.id %>, this.checked)" // Pass the checkbox state
-                     class="w-4 h-4 text-blue-600 bg-gray-600"
-                     />
-                     <label for="todo-checkbox-<%= todo.id %>" class="ml-2 text-sm text-gray-600 cursor-pointer">
-                        <%= todo.title %>
-                     </label>
-                     <a href="#" class="hidden trash-icon ml-2" onclick="deleteTodo(<%= todo.id %>)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                           class="feather feather-trash">
-                           <polyline points="3 6 5 6 21 6"></polyline>
-                           <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                           </path>
-                        </svg>
-                     </a>
-               </div>
-            </li>
-            <% } %>
-               <% }) %>
+      <% overdue.forEach(todo=> { %>
+         <li class="Todo-Item">
+            <div class="flex w-fit my-2 px-2 py-1 items-center rounded hover:bg-purple-50">
+               <input id="todo-checkbox-<%= todo.id %>" type="checkbox" <%=todo.completed ? "checked" : "" %>
+               onclick="updateTodo(<%= todo.id %>, this.checked)" class="w-4 h-4 text-blue-600 bg-gray-600"/>
+                  <label for="todo-checkbox-<%= todo.id %>" class="ml-2 text-sm text-gray-600 cursor-pointer">
+                     <%= todo.title %>
+                  </label>
+                  <a href="#" class="hidden trash-icon ml-2" onclick="deleteTodo(<%= todo.id %>)">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="feather feather-trash">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                        </path>
+                     </svg>
+                  </a>
+            </div>
+         </li>
+         <% }) %>
    </ul>
 
-
+   <!-- Due Today -->
    <div class="flex justify-start items-center gap-2">
       <h5>Due Today</h5>
       <span id="count-due-today" class="bg-gray-300 py-1 px-2 rounded-xl">
-         <%= allTodos.filter(todo=> new Date(todo.dueDate).toDateString() === new Date().toDateString() &&
-            !todo.completed).length %>
+         <%= dueToday.length %>
       </span>
    </div>
    <ul class="list-none p-2">
-      <% allTodos.forEach(todo=> { %>
-         <% if (new Date(todo.dueDate).toDateString()===new Date().toDateString() && !todo.completed) { %>
-            <li class="Todo-Item">
-               <div class="flex w-fit my-2 px-2 py-1 items-center rounded hover:bg-purple-50">
-                  <input id="todo-checkbox-<%= todo.id %>" type="checkbox" <%=todo.completed ? "checked" : "" %>
-                  onclick="updateTodo(<%= todo.id %>, this.checked)" // Pass the checkbox state
-                     class="w-4 h-4 text-blue-600 bg-gray-600"
-                     />
-                     <label for="todo-checkbox-<%= todo.id %>" class="ml-2 text-sm text-gray-600 cursor-pointer">
-                        <%= todo.title %>
-                     </label>
-                     <a href="#" class="hidden trash-icon ml-2" onclick="deleteTodo(<%= todo.id %>)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                           class="feather feather-trash">
-                           <polyline points="3 6 5 6 21 6"></polyline>
-                           <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                           </path>
-                        </svg>
-                     </a>
-               </div>
-            </li>
-            <% } %>
-               <% }) %>
+      <% dueToday.forEach(todo=> { %>
+         <li class="Todo-Item">
+            <div class="flex w-fit my-2 px-2 py-1 items-center rounded hover:bg-purple-50">
+               <input id="todo-checkbox-<%= todo.id %>" type="checkbox" <%=todo.completed ? "checked" : "" %>
+               onclick="updateTodo(<%= todo.id %>, this.checked)" class="w-4 h-4 text-blue-600 bg-gray-600"/>
+                  <label for="todo-checkbox-<%= todo.id %>" class="ml-2 text-sm text-gray-600 cursor-pointer">
+                     <%= todo.title %>
+                  </label>
+                  <a href="#" class="hidden trash-icon ml-2" onclick="deleteTodo(<%= todo.id %>)">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="feather feather-trash">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                        </path>
+                     </svg>
+                  </a>
+            </div>
+         </li>
+         <% }) %>
    </ul>
 
-
+   <!-- Due Later -->
    <div class="flex justify-start items-center gap-2">
       <h5>Due Later</h5>
       <span id="count-due-later" class="bg-gray-300 py-1 px-2 rounded-xl">
-         <%= allTodos.filter(todo=> new Date(todo.dueDate) > new Date() && !todo.completed).length %>
+         <%= dueLater.length %>
       </span>
    </div>
    <ul class="list-none p-2">
-      <% allTodos.forEach(todo=> { %>
-         <% if (new Date(todo.dueDate)> new Date() && !todo.completed) { %>
-            <li class="Todo-Item">
-               <div class="flex w-fit my-2 px-2 py-1 items-center rounded hover:bg-purple-50">
-                  <input id="todo-checkbox-<%= todo.id %>" type="checkbox" <%=todo.completed ? "checked" : "" %>
-                  onclick="updateTodo(<%= todo.id %>, this.checked)" // Pass the checkbox state
-                     class="w-4 h-4 text-blue-600 bg-gray-600"
-                     />
-                     <label for="todo-checkbox-<%= todo.id %>" class="ml-2 text-sm text-gray-600 cursor-pointer">
-                        <%= todo.title %>
-                     </label>
-                     <a href="#" class="hidden trash-icon ml-2" onclick="deleteTodo(<%= todo.id %>)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                           class="feather feather-trash">
-                           <polyline points="3 6 5 6 21 6"></polyline>
-                           <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                           </path>
-                        </svg>
-                     </a>
-               </div>
-            </li>
-            <% } %>
-               <% }) %>
-   </ul>
-
-   <div class="flex justify-start items-center gap-2"></div>
-   <h5>Completed Items
-      <span id="count-completed" class="bg-gray-300 py-1 px-2 rounded-xl">
-         <%= allTodos.filter(todo=> todo.completed).length %>
-      </span>
-   </h5>
-</div>
-<ul class="list-none p-2">
-   <% allTodos.forEach(todo=> { %>
-      <% if (todo.completed) { %>
+      <% dueLater.forEach(todo=> { %>
          <li class="Todo-Item">
             <div class="flex w-fit my-2 px-2 py-1 items-center rounded hover:bg-purple-50">
-               <input id="todo-checkbox-<%= todo.id %>" type="checkbox" checked
-                  onclick="updateTodo(<%= todo.id %>, this.checked)" // Pass the checkbox state
-                  class="w-4 h-4 text-blue-600 bg-gray-600" />
-               <label for="todo-checkbox-<%= todo.id %>" class="ml-2 text-sm text-gray-600 cursor-pointer">
-                  <%= todo.title %>
-               </label>
-               <a href="#" class="hidden trash-icon ml-2" onclick="deleteTodo(<%= todo.id %>)">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                     class="feather feather-trash">
-                     <polyline points="3 6 5 6 21 6"></polyline>
-                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                     </path>
-                  </svg>
-               </a>
+               <input id="todo-checkbox-<%= todo.id %>" type="checkbox" <%=todo.completed ? "checked" : "" %>
+               onclick="updateTodo(<%= todo.id %>, this.checked)" class="w-4 h-4 text-blue-600 bg-gray-600"/>
+                  <label for="todo-checkbox-<%= todo.id %>" class="ml-2 text-sm text-gray-600 cursor-pointer">
+                     <%= todo.title %>
+                  </label>
+                  <a href="#" class="hidden trash-icon ml-2" onclick="deleteTodo(<%= todo.id %>)">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="feather feather-trash">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                        </path>
+                     </svg>
+                  </a>
             </div>
          </li>
-         <% } %>
-            <% }) %>
-</ul>
+         <% }) %>
+   </ul>
 
-</div>
-
-
+   <!-- Completed Items -->
+   <div class="flex justify-start items-center gap-2">
+      <h5>Completed Items</h5>
+      <span id="count-completed" class="bg-gray-300 py-1 px-2 rounded-xl">
+         <%= completed.length %>
+      </span>
+   </div>
+   <ul class="list-none p-2">
+      <% completed.forEach(todo=> { %>
+         <li class="Todo-Item">
+            <div class="flex w-fit my-2 px-2 py-1 items-center rounded hover:bg-purple-50">
+               <input id="todo-checkbox-<%= todo.id %>" type="checkbox" <%=todo.completed ? "checked" : "" %>
+               onclick="updateTodo(<%= todo.id %>, this.checked)" class="w-4 h-4 text-blue-600 bg-gray-600"/>
+                  <label for="todo-checkbox-<%= todo.id %>" class="ml-2 text-sm text-gray-600 cursor-pointer">
+                     <%= todo.title %>
+                  </label>
+                  <a href="#" class="hidden trash-icon ml-2" onclick="deleteTodo(<%= todo.id %>)">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="feather feather-trash">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                        </path>
+                     </svg>
+                  </a>
+            </div>
+         </li>
+         <% }) %>
+   </ul>
 </div>
