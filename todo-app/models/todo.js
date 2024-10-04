@@ -19,6 +19,20 @@ module.exports = (sequelize, DataTypes) => {
       return this.findAll();
     }
 
+    static async remove(id) {
+      return this.destroy({
+        where: {
+          id,
+        },
+      });
+    }
+
+    static async setCompletionStatus(id, status) {
+      const todo = await this.findByPk(id);
+      if (!todo) throw new Error("Todo not found");
+      return todo.update({ completed: status });
+    }
+
     markAsCompleted() {
       return this.update({ completed: true });
     }
