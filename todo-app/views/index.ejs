@@ -65,11 +65,11 @@
                </div>
             </form>
 
-            <%- include('todos.ejs', { title:"Overdue",data:overdue }) %>
-               <%- include('todos.ejs', { title:"Due Today",data:dueToday }) %>
-                  <%- include('todos.ejs', { title:"Due Later",data:dueLater }) %>
-                     <%- include('todos.ejs', { title:"Completed Items",data:completedItems }) %>
-
+            <%- include('todos.ejs', { title:"Overdue",countId:"count-overdue",data:overdue }) %>
+               <%- include('todos.ejs', { title:"Due Today",countId:"count-due-today",data:dueToday }) %>
+                  <%- include('todos.ejs', { title:"Due Later",countId:"count-due-later",data:dueLater }) %>
+                     <%- include('todos.ejs', { title:"Completed Items",countId:"count-completed",data:completedItems })
+                        %>
                         <%- include('footer.ejs') %>
       </div>
    </div>
