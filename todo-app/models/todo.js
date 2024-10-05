@@ -1,5 +1,5 @@
 "use strict";
-const { Model } = require("sequelize");
+const { Model, Op } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Todo extends Model {
     /**
@@ -19,18 +19,77 @@ module.exports = (sequelize, DataTypes) => {
       return this.findAll();
     }
 
-    static async remove(id) {
-      return this.destroy({
-        where: {
-          id,
-        },
-      });
+    static async overdue() {
+      try {
+        return this.findAll({
+          where: {
+            dueDate: {
+              [Op.lt]: new Date(),
+            },
+            completed: false,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
     }
 
-    static async setCompletionStatus(id, status) {
-      const todo = await this.findByPk(id);
-      if (!todo) throw new Error("Todo not found");
-      return todo.update({ completed: status });
+    static async dueToday() {
+      try {
+        return this.findAll({
+          where: {
+            dueDate: {
+              [Op.eq]: new Date(),
+            },
+            completed: false,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    static async dueLater() {
+      try {
+        return this.findAll({
+          where: {
+            dueDate: {
+              [Op.gt]: new Date(),
+            },
+            completed: false,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    static async completedItems() {
+      try {
+        return this.findAll({
+          where: {
+            completed: true,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    setCompletionStatus(status) {
+      return this.update({ completed: status });
+    }
+
+    static async remove(id) {
+      try {
+        return this.destroy({
+          where: {
+            id,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
     }
 
     markAsCompleted() {

@@ -1,47 +1,36 @@
 const express = require("express");
+const csrf = require("tiny-csrf");
+const cookieParser = require("cookie-parser");
 const app = express();
 const bodyParser = require("body-parser");
 const path = require("path");
-const csrf = require("csurf");
-const cookieParser = require("cookie-parser");
+const { Todo } = require("./models");
+const { Model } = require("sequelize");
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser("shh! some secret string"));
-app.use(csrf({ cookie: true }));
-
-const { Todo } = require("./models");
-const { Model } = require("sequelize");
+app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 
 app.set("view engine", "ejs");
 
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", async (request, response) => {
-  const allTodos = await Todo.getTodos();
-  const overdue = allTodos.filter(
-    (todo) => new Date(todo.dueDate) < new Date() && !todo.completed
-  );
-  const dueToday = allTodos.filter(
-    (todo) =>
-      new Date(todo.dueDate).toDateString() === new Date().toDateString() &&
-      !todo.completed
-  );
-  const dueLater = allTodos.filter(
-    (todo) => new Date(todo.dueDate) > new Date() && !todo.completed
-  );
-  const completed = allTodos.filter((todo) => todo.completed);
-
+  const overdue = await Todo.overdue();
+  const dueToday = await Todo.dueToday();
+  const dueLater = await Todo.dueLater();
+  const completedItems = await Todo.completedItems();
   if (request.accepts("html")) {
     response.render("index", {
       overdue,
       dueToday,
       dueLater,
-      completed,
+      completedItems,
       csrfToken: request.csrfToken(),
     });
   } else {
-    response.json({ overdue, dueToday, dueLater, completed });
+    response.json({ overdue, dueToday, dueLater, completedItems });
   }
 });
 
@@ -55,11 +44,11 @@ app.get("/todos", async (request, response) => {
   }
 });
 
+// adding todo
 app.post("/todos", async (request, response) => {
   console.log("Creating a todo", request.body);
-  // todo
   try {
-    const todo = await Todo.addTodo({
+    await Todo.addTodo({
       title: request.body.title,
       dueDate: request.body.dueDate,
       completed: false,
@@ -72,13 +61,11 @@ app.post("/todos", async (request, response) => {
 });
 
 app.put("/todos/:id", async (request, response) => {
-  console.log("Updating todo with ID:", request.params.id);
+  console.log("We have to update a todi with ID:", request.params.id);
+  const todo = await Todo.findByPk(request.params.id);
+  const status = request.body.completed;
   try {
-    const { completed } = request.body;
-    const updatedTodo = await Todo.setCompletionStatus(
-      request.params.id,
-      completed
-    );
+    const updatedTodo = await todo.setCompletionStatus(status);
     return response.json(updatedTodo);
   } catch (error) {
     console.log(error);
@@ -87,7 +74,6 @@ app.put("/todos/:id", async (request, response) => {
 });
 
 app.delete("/todos/:id", async (request, response) => {
-  const todoID = request.params.id;
   try {
     await Todo.remove(request.params.id);
     return response.json({ success: true });

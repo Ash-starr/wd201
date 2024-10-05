@@ -8,38 +8,37 @@
    <title>TODO App</title>
    <script src="https://cdn.tailwindcss.com"></script>
    <link rel="stylesheet" href="./css/styles.css">
+
    <script>
-      var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-      function updateTodo(id, completed) {
+      var token = document.querySelector(`meta[name="csrf-token"]`).getAttribute("content");
+      const checkedOrNot = id => document.getElementById(`todo-checkbox-${id}`).checked;
+      function updateTodo(id) {
          fetch(`/todos/${id}`, {
-            method: 'PUT',
-            headers: {
-               'Content-Type': 'application/json',
-               'CSRF-Token': token  // Pass the token in the headers
-            },
-            body: JSON.stringify({ completed })
+            method: 'put',
+            headers: { 'Content-type': 'application/json' },
+            body: JSON.stringify({
+               completed: checkedOrNot(id),
+               "_csrf": token,
+            })
          }).then((res) => {
             if (res.ok) {
                window.location.reload();
             }
-         }).catch((err) => console.log(err));
+         }).catch((err) => console.log(err))
       }
-
       function deleteTodo(id) {
          fetch(`/todos/${id}`, {
-            method: 'DELETE',
-            headers: {
-               'Content-Type': 'application/json',
-               'CSRF-Token': token  // Pass the token in the headers
-            },
-            body: JSON.stringify({ "_csrf": token })
+            method: 'delete',
+            headers: { 'Content-type': 'application/json' },
+            body: JSON.stringify({
+               "_csrf": token,
+            })
          }).then((res) => {
             if (res.ok) {
                window.location.reload();
             }
-         }).catch((err) => console.log(err));
+         }).catch((err) => console.log(err))
       }
-
    </script>
 </head>
 
@@ -49,7 +48,7 @@
          <%- include('header.ejs') %>
 
             <form id="todo-form" action="/todos" method="POST">
-               <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+               <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                <div class="flex gap-2 p-4">
                   <div class="flex-auto">
                      <input type="text" name="title" placeholder="What's next?"
@@ -66,9 +65,12 @@
                </div>
             </form>
 
-            <%- include('todos.ejs', { overdue, dueToday, dueLater, completed }) %>
+            <%- include('todos.ejs', { title:"Overdue",data:overdue }) %>
+               <%- include('todos.ejs', { title:"Due Today",data:dueToday }) %>
+                  <%- include('todos.ejs', { title:"Due Later",data:dueLater }) %>
+                     <%- include('todos.ejs', { title:"Completed Items",data:completedItems }) %>
 
-               <%- include('footer.ejs') %>
+                        <%- include('footer.ejs') %>
       </div>
    </div>
 
