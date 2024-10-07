@@ -8,24 +8,33 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      Todo.belongsTo(models.User, {
+        foreignKey: "userId",
+      });
       // define association here
     }
 
-    static addTodo({ title, dueDate }) {
-      return this.create({ title: title, dueDate: dueDate, completed: false });
+    static addTodo({ title, dueDate, userId }) {
+      return this.create({
+        title: title,
+        dueDate: dueDate,
+        completed: false,
+        userId,
+      });
     }
 
     static getTodos() {
       return this.findAll();
     }
 
-    static async overdue() {
+    static async overdue(userId) {
       try {
         return this.findAll({
           where: {
             dueDate: {
               [Op.lt]: new Date(),
             },
+            userId,
             completed: false,
           },
         });
@@ -34,13 +43,14 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
 
-    static async dueToday() {
+    static async dueToday(userId) {
       try {
         return this.findAll({
           where: {
             dueDate: {
               [Op.eq]: new Date(),
             },
+            userId,
             completed: false,
           },
         });
@@ -49,13 +59,14 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
 
-    static async dueLater() {
+    static async dueLater(userId) {
       try {
         return this.findAll({
           where: {
             dueDate: {
               [Op.gt]: new Date(),
             },
+            userId,
             completed: false,
           },
         });
@@ -64,11 +75,12 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
 
-    static async completedItems() {
+    static async completedItems(userId) {
       try {
         return this.findAll({
           where: {
             completed: true,
+            userId,
           },
         });
       } catch (error) {
@@ -80,11 +92,12 @@ module.exports = (sequelize, DataTypes) => {
       return this.update({ completed: status });
     }
 
-    static async remove(id) {
+    static async remove(id, userId) {
       try {
         return this.destroy({
           where: {
             id,
+            userId,
           },
         });
       } catch (error) {
@@ -98,8 +111,21 @@ module.exports = (sequelize, DataTypes) => {
   }
   Todo.init(
     {
-      title: DataTypes.STRING,
-      dueDate: DataTypes.DATEONLY,
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: true,
+          len: 5,
+        },
+      },
+      dueDate: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: true,
+        },
+      },
       completed: DataTypes.BOOLEAN,
     },
     {

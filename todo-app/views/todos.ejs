@@ -1,28 +1,80 @@
-<h5>
-   <%= title %> <span id="<%= countId %>"
-         class="bg-gray-100 text-gray-900 text-sm font-small mr-2 px-2.5 py-0.5 rounded dark:bg-gray-200 dark:text-gray-900 justify-center items-center items">
-         <%= data.length %>
-      </span>
-</h5>
-<ul class="list-none">
-   <% for(let i=0;i<data.length;i++) { %>
-      <li class="Todo-Item">
-         <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-purple-50">
-            <input type="checkbox" id="todo-checkbox-<%= data[i].id %>" <%=data[i].completed ? "checked" :"" %>
-            onclick="updateTodo(<%= data[i].id %>)"
-               class="w-4 h-4 text-blue-600 bg-gray-100">
-               <label for="todo-checkbox-<%= data[i].id %>" class="ml-2 text-sm text-gray-600 cursor-pointer">
-                  <%= data[i].title%>
-               </label>
-               <a href="#" class="hidden  trash-icon ml-2" onclick="deleteTodo(<%= data[i].id %> )">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                     class="feather feather-trash">
-                     <polyline points="3 6 5 6 21 6"></polyline>
-                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                  </svg>
-               </a>
-         </div>
-      </li>
-      <% } %>
-</ul>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta name="csrf-token" content="<%= csrfToken %>">
+   <title>TODO App</title>
+   <script src="https://cdn.tailwindcss.com"></script>
+   <link rel="stylesheet" href="./css/styles.css">
+
+   <script>
+      var token = document.querySelector(`meta[name="csrf-token"]`).getAttribute("content");
+      const checkedOrNot = id => document.getElementById(`todo-checkbox-${id}`).checked;
+      function updateTodo(id) {
+         fetch(`/todos/${id}`, {
+            method: 'put',
+            headers: { 'Content-type': 'application/json' },
+            body: JSON.stringify({
+               completed: checkedOrNot(id),
+               "_csrf": token,
+            })
+         }).then((res) => {
+            if (res.ok) {
+               window.location.reload();
+            }
+         }).catch((err) => console.log(err))
+      }
+      function deleteTodo(id) {
+         fetch(`/todos/${id}`, {
+            method: 'delete',
+            headers: { 'Content-type': 'application/json' },
+            body: JSON.stringify({
+               "_csrf": token,
+            })
+         }).then((res) => {
+            if (res.ok) {
+               window.location.reload();
+            }
+         }).catch((err) => console.log(err))
+      }
+   </script>
+</head>
+
+<body>
+   <div class="grid grid-cols-6">
+      <div class="col-start-3 col-span-2">
+         <%- include('header.ejs') %>
+            <a href="/signout">Sign-out</a>
+
+            <form id="todo-form" action="/todos" method="POST">
+               <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+               <div class="flex gap-2 p-4">
+                  <div class="flex-auto">
+                     <input type="text" name="title" placeholder="What's next?"
+                        class="border border-gray-300 rounded text-gray-900 w-full  p-2 text-sm" required />
+                  </div>
+                  <div class="flex-auto">
+                     <input type="date" name="dueDate"
+                        class="border border-gray-300 rounded text-gray-900 w-full  p-2 text-sm leading-4" required />
+                  </div>
+                  <div class="flex-none">
+                     <button type="submit"
+                        class="bg-green-600 text-white px-5 py-2 rounded font-medium py-1.5 mr-2 mb-2">Add</button>
+                  </div>
+               </div>
+            </form>
+
+            <%- include('todo.ejs', { title:"Overdue",countId:"count-overdue",data:overdue }) %>
+               <%- include('todo.ejs', { title:"Due Today",countId:"count-due-today",data:dueToday }) %>
+                  <%- include('todo.ejs', { title:"Due Later",countId:"count-due-later",data:dueLater }) %>
+                     <%- include('todo.ejs', { title:"Completed Items",countId:"count-completed",data:completedItems })
+                        %>
+                        <%- include('footer.ejs') %>
+      </div>
+   </div>
+
+</body>
+
+</html>
