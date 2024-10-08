@@ -15,7 +15,7 @@ const flash = require("connect-flash");
 const saltRounds = 10;
 
 const { Todo, User } = require("./models");
-const { password } = require("pg/lib/defaults");
+const { password, user } = require("pg/lib/defaults");
 const { request } = require("http");
 
 app.use(bodyParser.json());
@@ -84,9 +84,13 @@ app.use(function (request, response, next) {
 });
 
 app.get("/", async (request, response) => {
-  response.render("index", {
-    csrfToken: request.csrfToken(),
-  });
+  if (request.isAuthenticated()) {
+    return response.redirect("/todos");
+  } else {
+    response.render("index", {
+      csrfToken: request.csrfToken(),
+    });
+  }
 });
 
 // create user singup
