@@ -123,7 +123,7 @@ app.post("/users", async (request, response) => {
 
 app.get("/login", async (request, response) => {
   response.render("login", {
-    title: " Login",
+    title: "Login",
     csrfToken: request.csrfToken(),
   });
 });
